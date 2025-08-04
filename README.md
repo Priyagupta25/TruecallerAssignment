@@ -155,14 +155,14 @@ User Intent → ViewModel/Processor → Model → New ViewState → View renders
 com.example.truecallerassignment
 ├── data
 │   ├── repository
-│   └── remote
+│  
 ├── domain
 │   ├── model
 │   └── usecase
 ├── presentation
 │   ├── ui
 │   └── viewmodel
-└── utils
+└── Network
 ```
 
 ---
