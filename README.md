@@ -36,7 +36,7 @@ Develop an Android application that fetches and processes the content of a webpa
 > Business logic is independent of frameworks like Android or libraries. Code becomes easier to test, maintain, and extend. Dependencies flow in a single direction (outer to inner layers).
 
 ### Dependency Flow Diagram
-\`\`\`
+```
 UI Layer (Compose / ViewModel)
 ↓
 Domain Layer (UseCase / Repository Interface)
@@ -44,7 +44,7 @@ Domain Layer (UseCase / Repository Interface)
 Data Layer (Repository Implementation)
 ↓
 Data Source (API / DB)
-\`\`\`
+```
 Each layer depends **only** on the layer directly below it.
 
 ---
@@ -57,7 +57,7 @@ Each layer depends **only** on the layer directly below it.
 
 ## Layer Breakdown
 
-### Presentation Layer (\`app\` module)
+### Presentation Layer (`app` module)
 - **Responsibilities**: UI rendering & handling user interactions.
 - **Components**:
     - Compose UI
@@ -68,25 +68,47 @@ Each layer depends **only** on the layer directly below it.
 - **Responsibilities**: Core business logic & UseCases.
 - **Components**:
     - UseCases
-    - Repository Interfaces
+    - Repository Interfaces.
 - **Communicates with**: Data Layer (via interfaces).
 - **Testable & Framework-Independent**.
 
 ### Data Layer
 - **Responsibilities**: Data fetching & transformations.
 - **Components**:
-    - Repository Implementations
-    - RemoteDataSource (API via Retrofit)
-    - LocalDataSource (Room, if needed)
-    - Mappers (DTO ↔ Domain Model)
+    - Repository Implementations.
+    - RemoteDataSource (API via Retrofit).
+    - LocalDataSource (Room, if needed).
+    - Mappers (DTO ↔ Domain Model).
 - **Communicates with**: Domain Layer.
 
 ### Network Layer
 - **Responsibilities**: API setup and error handling.
 - **Components**:
-    - Retrofit Client
-    - API Service Interfaces
-    - Network Error Handlers
+    - Retrofit Client.
+    - API Service Interfaces.
+    - Network Error Handlers.
+
+---
+
+## 🌀 MVI (Model-View-Intent)
+
+**MVI (Model-View-Intent)** is a unidirectional data flow architecture where **View emits Intents**, **Model processes them**, and **View renders the State**.
+
+### Key Concepts:
+- **Intent**: User actions or events (button clicks, screen load, etc.).
+- **Model**: Business logic that transforms intents into new UI states.
+- **View**: Pure UI renderer that displays the current state.
+
+### MVI Flow:
+```
+User Intent → ViewModel/Processor → Model → New ViewState → View renders
+```
+
+### Benefits of MVI:
+- Single source of truth (**ViewState**).
+- Predictable state transitions.
+- Easier to debug with pure functions.
+- Immutability enforces cleaner architecture.
 
 ---
 
@@ -107,10 +129,14 @@ Each layer depends **only** on the layer directly below it.
 - 🟦 **Jetpack Compose**
 - 🏗️ **MVI Architecture**
 - 🧹 **Clean Architecture Principles**
-- 🔗 **Hilt (DI)**
+- 🔗 **Hilt (Dependency Injection)**
 - 🌐 **Retrofit (Networking)**
 - 🔄 **Coroutines & Flow (Async operations)**
-- 🗄️ **Room (Local Storage - optional)**
+
+### 🧪 Testing Stack
+- **JUnit 5** – Unit testing framework.
+- **Mockito** – Mocking dependencies.
+- **Truth** – Fluent assertions.
 
 ---
 
@@ -125,7 +151,7 @@ Each layer depends **only** on the layer directly below it.
 ---
 
 ## Folder Structure
-\`\`\`
+```
 com.example.truecallerassignment
 ├── data
 │   ├── repository
@@ -137,7 +163,7 @@ com.example.truecallerassignment
 │   ├── ui
 │   └── viewmodel
 └── utils
-\`\`\`
+```
 
 ---
 
@@ -150,4 +176,5 @@ com.example.truecallerassignment
 
 ## Author
 Priya Gupta
+
 ---

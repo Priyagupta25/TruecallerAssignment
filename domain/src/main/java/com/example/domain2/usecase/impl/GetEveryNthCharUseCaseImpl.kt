@@ -1,9 +1,7 @@
 package com.example.domain.usecase.impl
 
-import com.example.domain.repository.WebsiteRepository
 import com.example.domain.usecase.contract.GetEveryNthCharUseCase
 import com.example.domain2.DefaultDispatcher
-import com.example.domain2.IoDispatcher
 import com.example.domain2.UiState
 import jakarta.inject.Inject
 import kotlinx.coroutines.CoroutineDispatcher
