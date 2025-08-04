@@ -1,4 +1,4 @@
-package com.example.truecallerassignment.presentation
+package com.example.truecallerassignment.presentation.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,6 +7,8 @@ import com.example.domain.usecase.contract.GetEveryNthCharUseCase
 import com.example.domain.usecase.contract.GetWordCountUseCase
 import com.example.domain2.UiState
 import com.example.domain2.usecase.contract.FetchContentUsecase
+import com.example.truecallerassignment.presentation.Constants.NthItem
+import com.example.truecallerassignment.presentation.ui.MainUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import jakarta.inject.Inject
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -14,6 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.supervisorScope
 
 @HiltViewModel
 class MainViewModel @Inject constructor(
@@ -25,13 +28,13 @@ class MainViewModel @Inject constructor(
     private val _uiState = MutableStateFlow(MainUiState())
     val uiState: StateFlow<MainUiState> = _uiState.asStateFlow()
 
-    private fun fetchData(text: String) {
-
-        getNthChar(15,text)
-        getAllNthChar(15,text)
-        getWordCounter(text)
+    private fun fetchData(text: String) = viewModelScope.launch {
+        supervisorScope {
+            launch { getNthChar(NthItem, text) }
+            launch { getAllNthChar(NthItem, text) }
+            launch { getWordCounter(text) }
+        }
     }
-
     fun fetchContentUsecase(n: Int) = viewModelScope.launch {
         _uiState.update {
             it.copy(
@@ -64,15 +67,9 @@ class MainViewModel @Inject constructor(
                         content = ""
                     )
                 }
-
-
             }
-
-
         }
-
     }
-
 
     fun getNthChar(n: Int,text: String) = viewModelScope.launch {
         getNthCharUseCase(n,text).collect { result ->
@@ -80,14 +77,12 @@ class MainViewModel @Inject constructor(
                 when (result) {
                     is UiState.Loading -> it.copy(
                         nthChar = "loading..",
-                        errorMessage = null
+                        nthCharError = null
                     )
-
                     is UiState.Success -> it.copy(nthChar = result.data)
-
                     is UiState.Failure -> it.copy(
-                        errorMessage = result.errorMessage,
-                        nthChar = ""
+                        nthChar = "",
+                        nthCharError = result.errorMessage
                     )
                 }
             }
@@ -100,14 +95,14 @@ class MainViewModel @Inject constructor(
                 when (result) {
                     is UiState.Loading -> it.copy(
                         wordCounts = "loading..",
-                        errorMessage = null
+                        wordCountError = null
                     )
 
                     is UiState.Success -> it.copy(wordCounts = result.data)
 
                     is UiState.Failure -> it.copy(
-                        errorMessage = result.errorMessage,
-                        wordCounts = ""
+                        wordCounts = "",
+                        wordCountError = result.errorMessage
                     )
                 }
             }
@@ -120,17 +115,17 @@ class MainViewModel @Inject constructor(
                 when (result) {
                     is UiState.Loading -> it.copy(
                         allNthChar = "loading..",
-                        errorMessage = null
+                        allNthCharError = null
                     )
 
                     is UiState.Success -> it.copy(
                         allNthChar = result.data,
-                        errorMessage = null
+                        allNthCharError = null
                     )
 
                     is UiState.Failure -> it.copy(
-                        errorMessage = result.errorMessage,
-                        allNthChar = ""
+                        allNthChar = "",
+                        allNthCharError = result.errorMessage
                     )
                 }
             }

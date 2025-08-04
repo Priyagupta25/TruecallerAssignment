@@ -31,7 +31,7 @@ Develop an Android application that fetches and processes the content of a webpa
 
 ---
 
-## Architecture: Clean Architecture (MVVM)
+## Architecture: Clean Architecture (MVI)
 
 > Business logic is independent of frameworks like Android or libraries. Code becomes easier to test, maintain, and extend. Dependencies flow in a single direction (outer to inner layers).
 
@@ -105,7 +105,7 @@ Each layer depends **only** on the layer directly below it.
 
 - 🟢 **Kotlin**
 - 🟦 **Jetpack Compose**
-- 🏗️ **MVVM Architecture**
+- 🏗️ **MVI Architecture**
 - 🧹 **Clean Architecture Principles**
 - 🔗 **Hilt (DI)**
 - 🌐 **Retrofit (Networking)**

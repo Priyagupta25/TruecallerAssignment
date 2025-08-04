@@ -1,4 +1,4 @@
-package com.example.truecallerassignment.presentation
+package com.example.truecallerassignment.presentation.ui
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
@@ -32,6 +32,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import com.example.truecallerassignment.R
+import com.example.truecallerassignment.presentation.viewmodel.MainViewModel
 
 // composable view
 
@@ -72,7 +73,6 @@ fun MainScreen(viewModel: MainViewModel = hiltViewModel()) {
                 Spacer(modifier = Modifier.height(16.dp))
             }
             uiState.errorMessage?.let { text ->
-
                 ErrorView(text,viewModel)
             }
             if (!uiState.content.isNullOrBlank()) {
@@ -107,9 +107,12 @@ fun ResultCard(title: String, content: String) {
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Column(modifier = Modifier.padding(16.dp)) {
-            Text(text = title, style = MaterialTheme.typography.titleMedium)
+            Text(text = title, style = MaterialTheme.typography.titleLarge)
             Spacer(modifier = Modifier.height(8.dp))
-            ExpandableText(text = content, style = MaterialTheme.typography.bodyLarge)
+            ExpandableText(
+                text = content,
+                style = MaterialTheme.typography.bodyLarge
+            )
 
         }
     }

@@ -13,7 +13,10 @@ class WebsiteRepositoryImpl  @Inject constructor(
     override suspend fun fetchWebsiteText(): String {
         val response = trueCallerAPI.fetchWebContent()
         return if (response.isSuccessful) {
-            response.body().toString().trim()
-        } else throw ContentNotFoundException(response.message(),response.code())
+            response.body()?.trim()
+                ?: throw ContentNotFoundException("Empty response body", response.code())
+        } else {
+            throw ContentNotFoundException(response.message(), response.code())
+        }
     }
 }

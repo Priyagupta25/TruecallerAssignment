@@ -1,4 +1,4 @@
-package com.example.truecallerassignment.presentation
+package com.example.truecallerassignment.presentation.ui
 
 import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.clickable
@@ -9,12 +9,14 @@ import androidx.compose.material3.Text
 
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.withStyle
 
 
@@ -22,13 +24,12 @@ import androidx.compose.ui.text.withStyle
 @Composable
 fun ExpandableText(
     modifier: Modifier = Modifier,
-    textModifier: Modifier = Modifier,
     style: TextStyle = LocalTextStyle.current,
     fontStyle: FontStyle? = null,
     text: String,
     collapsedMaxLine: Int = 5,
     showMoreText: String = " ....see more",
-    showMoreStyle: SpanStyle = SpanStyle(fontWeight = FontWeight.W500),
+    showMoreStyle: SpanStyle = SpanStyle( color = Color.Blue,fontWeight = FontWeight.W500, textDecoration =  TextDecoration.Underline ),
     showLessText: String = "....see less",
     showLessStyle: SpanStyle = showMoreStyle,
     textAlign: TextAlign? = null
@@ -36,14 +37,13 @@ fun ExpandableText(
     var isExpanded by remember { mutableStateOf(false) }
     var clickable by remember { mutableStateOf(false) }
     var lastCharIndex by remember { mutableStateOf(0) }
-    Box(modifier = Modifier
-        .clickable(clickable) {
-            isExpanded = !isExpanded
-        }
-        .then(modifier)
+
+    Box(
+        modifier = modifier
+            .clickable(enabled = clickable) { isExpanded = !isExpanded }
     ) {
         Text(
-            modifier = textModifier
+            modifier = Modifier
                 .fillMaxWidth()
                 .animateContentSize(),
             text = buildAnnotatedString {
@@ -52,11 +52,11 @@ fun ExpandableText(
                         append(text)
                         withStyle(style = showLessStyle) { append(showLessText) }
                     } else {
-                        val adjustText =
-                            text.substring(startIndex = 0, endIndex = lastCharIndex)
-                                .dropLast(showMoreText.length)
-                                .dropLastWhile { Character.isWhitespace(it) || it == '.' }
-                        append(adjustText)
+                        val adjustedText = text
+                            .substring(0, lastCharIndex)
+                            .dropLast(showMoreText.length)
+                            .trimEnd('.', ' ', '\n')
+                        append(adjustedText)
                         withStyle(style = showMoreStyle) { append(showMoreText) }
                     }
                 } else {

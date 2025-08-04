@@ -1,9 +1,8 @@
 package com.example.domain2.usecase.impl
 
 import com.example.domain.repository.WebsiteRepository
-import com.example.domain.usecase.contract.GetWordCountUseCase
-import com.example.domain.usecase.impl.GetWordCountUseCaseImpl
 import com.example.domain2.UiState
+
 import com.example.domain2.usecase.contract.FetchContentUsecase
 import com.google.common.truth.Truth.assertThat
 import com.sample.template.MainCoroutinesRule
@@ -20,8 +19,9 @@ import org.mockito.MockitoAnnotations
 
 class FetchContentUsecaseImplTest {
 
-    @get:Rule
-    var coroutineRule = MainCoroutinesRule()
+    @get:Rule(order = 0)
+    val coroutineRule = MainCoroutinesRule()
+
     private lateinit var fetchContentUsecase: FetchContentUsecase
     @Mock
     lateinit var websiteRepository: WebsiteRepository
@@ -29,27 +29,37 @@ class FetchContentUsecaseImplTest {
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
-        fetchContentUsecase =
-            FetchContentUsecaseImpl(
-                websiteRepository,
-                coroutineRule.testDispatcher
-            )
+        fetchContentUsecase = FetchContentUsecaseImpl(
+            websiteRepository,
+            coroutineRule.testDispatcher
+        )
     }
 
     @Test
     fun `test fetch content success`() = runTest {
-        // sample
         val response = "sample test data"
-      //request
+
         `when`(websiteRepository.fetchWebsiteText()).thenReturn(response)
         val result = fetchContentUsecase.invoke()
 
-     //verificationo f usecase
         val allResult = result.toList()
         assertThat(allResult.first()).isInstanceOf(UiState.Loading::class.java)
         assertThat(allResult.last()).isInstanceOf(UiState.Success::class.java)
         assertThat((allResult.last() as UiState.Success).data.trim()).isEqualTo(response)
         verify(websiteRepository, times(1)).fetchWebsiteText()
+    }
+
+    @Test
+    fun `test fetch content failure`() = runTest {
+        val errorMessage = "Network Error"
+        `when`(websiteRepository.fetchWebsiteText()).thenThrow(RuntimeException(errorMessage))
+
+        val result = fetchContentUsecase.invoke()
+        val allResult = result.toList()
+
+        assertThat(allResult.first()).isInstanceOf(UiState.Loading::class.java)
+        assertThat(allResult.last()).isInstanceOf(UiState.Failure::class.java)
+        assertThat((allResult.last() as UiState.Failure).errorMessage).contains(errorMessage)
     }
 
 

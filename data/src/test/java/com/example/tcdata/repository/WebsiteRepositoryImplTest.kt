@@ -32,16 +32,28 @@ class WebsiteRepositoryImplTest {
 
     @Test
     fun `test fetch content success`() = runTest {
-        // sample response
         val response = "test content"
 
-        // run usecase
         `when`(truecallerAPI.fetchWebContent()).thenReturn(Response.success(response))
         val result = websiteRepository.fetchWebsiteText()
 
-        // verify testcase
         assertThat(result).isEqualTo(response)
         Mockito.verify(truecallerAPI, Mockito.times(1)).fetchWebContent()
+    }
+    @Test(expected = Exception::class)
+    fun `test fetch content failure (HTTP error)`() = runTest {
+
+        `when`(truecallerAPI.fetchWebContent()).thenReturn(Response.error(404, okhttp3.ResponseBody.create(null, "Not Found")))
+
+        websiteRepository.fetchWebsiteText() // Should throw Exception in your RepoImpl
+    }
+
+    @Test(expected = RuntimeException::class)
+    fun `test fetch content throws network exception`() = runTest {
+
+        `when`(truecallerAPI.fetchWebContent()).thenThrow(RuntimeException("Network error"))
+
+        websiteRepository.fetchWebsiteText() // Should throw RuntimeException
     }
 
 }

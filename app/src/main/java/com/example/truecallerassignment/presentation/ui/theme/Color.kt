@@ -1,4 +1,4 @@
-package com.example.truecallerassignment.ui.theme
+package com.example.truecallerassignment.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
